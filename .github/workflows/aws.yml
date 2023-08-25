@@ -12,7 +12,7 @@ env:
   AWS_REGION: us-east-1                   
   ECR_REPOSITORY: legalario        
   ECS_SERVICE: legalario-service               
-  ECS_CLUSTER: my-cluster-legalario               
+  ECS_CLUSTER: legalario-cluster             
   ECS_TASK_DEFINITION: task-definition-legalario
                                             
   CONTAINER_NAME: MY_CONTAINER_NAME         
