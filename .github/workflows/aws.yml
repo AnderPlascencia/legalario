@@ -1,9 +1,5 @@
 name: AWS Deployment
 
-# on:
-#   pull_request:
-#     types:
-#       - closed
 on:  
   push:
     branches: [ "produccion" ]
