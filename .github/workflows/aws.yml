@@ -13,12 +13,10 @@ env:
   ECR_REPOSITORY: legalario        
   ECS_SERVICE: legalario-service               
   ECS_CLUSTER: legalario-cluster             
-  ECS_TASK_DEFINITION: task-definition-legalario
-                                            
-  CONTAINER_NAME: MY_CONTAINER_NAME         
+  ECS_TASK_DEFINITION: task-definition-legalario       
 
 jobs:
-  create-docker-image:
+  automated-deployment:
     runs-on: ubuntu-latest
 
     steps:
