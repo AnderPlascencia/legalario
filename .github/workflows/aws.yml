@@ -51,5 +51,6 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Actualizar versión en ECS
+      id: update-ecs
         run: |
           aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_DEFINITION --force-new-deployment
