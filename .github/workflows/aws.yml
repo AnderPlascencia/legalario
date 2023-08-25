@@ -1,12 +1,24 @@
 name: AWS Deployment
 
-on:
-  pull_request:
-    types:
-      - closed
+# on:
+#   pull_request:
+#     types:
+#       - closed
+on:  
+  push:
+    branches: [ "produccion" ]
+
+env:
+  AWS_REGION: us-east-1                   
+  ECR_REPOSITORY: legalario        
+  ECS_SERVICE: legalario-service               
+  ECS_CLUSTER: my-cluster-legalario               
+  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION
+                                            
+  CONTAINER_NAME: MY_CONTAINER_NAME         
 
 jobs:
-  deploy:
+  create-docker-image:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +30,26 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: your-region
+        aws-region: ${{ env.AWS_REGION }}
 
-    - name: Deploy to AWS
+    - name: Iniciar sesión en AWS ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Aquí puedes ejecutar los comandos para desplegar en AWS
-        # Por ejemplo, comandos de AWS CLI, AWS SDK, etc.
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    # - name: Deploy to AWS
+    #   run: |
+    #     # Aquí puedes ejecutar los comandos para desplegar en AWS
+    #     # Por ejemplo, comandos de AWS CLI, AWS SDK, etc.
